@@ -1,30 +1,40 @@
-# React + TypeScript + Vite
+// src/main.tsx
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import './index.css'
+import { createClient, Provider } from 'urql';
 
-Currently, two official plugins are available:
+const client = createClient({
+  url: import.meta.env.VITE_API_URL || 'http://localhost:4000/graphql',
+});
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <Provider value={client}>
+      <App />
+    </Provider>
+  </React.StrictMode>
+)
 
-## Expanding the ESLint configuration
+change to below for latest urql'  
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './index.css'
+import { Client, Provider, cacheExchange, fetchExchange } from 'urql';
 
-- Configure the top-level `parserOptions` property like this:
+const client = new Client({
+  url: 'http://localhost:4000/graphql',
+  exchanges: [cacheExchange, fetchExchange],
+});
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <Provider value={client}>
+    <App />
+    </Provider>
+  </React.StrictMode>
+)
